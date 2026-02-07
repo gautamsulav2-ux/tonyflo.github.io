@@ -1,67 +1,217 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>System Access</title>
+  <meta charset="UTF-8">
+  <title>Will You Be My Valentine? ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
-<style>
-body {
-    background-color: black;
-    color: lime;
-    font-family: monospace;
-    text-align: center;
-    margin-top: 100px;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
 
-button {
-    background-color: lime;
-    color: black;
-    padding: 15px 30px;
-    font-size: 20px;
-    border: none;
-    cursor: pointer;
-}
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fecfef);
+      overflow: hidden;
+    }
 
-#output {
-    margin-top: 30px;
-    font-size: 18px;
-}
-</style>
+    .container {
+      text-align: center;
+      background: rgba(255,255,255,0.9);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      position: relative;
+      max-width: 90%;
+    }
 
+    h1 {
+      font-size: 2.2rem;
+      color: #ff4b6e;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 12px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #yesBtn {
+      background: #28c76f;
+      color: white;
+      transform: scale(1);
+    }
+
+    #noBtn {
+      background: #ff4b6e;
+      color: white;
+      position: relative;
+    }
+
+    #yesBtn:hover {
+      background: #20a85a;
+    }
+
+    #noBtn:hover {
+      background: #e63b5c;
+    }
+
+    .fullscreenYes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #28c76f, #81fbb8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 6vw;
+      color: white;
+      z-index: 999;
+      animation: fadeIn 0.5s ease;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .heart {
+      position: fixed;
+      font-size: 20px;
+      animation: floatUp 4s linear infinite;
+      opacity: 0.7;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(100vh);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-10vh);
+        opacity: 0;
+      }
+    }
+
+  </style>
 </head>
 <body>
 
-<h1>Secure System</h1>
-<p>Click button to access system</p>
-
-<button onclick="hack()">ACCESS</button>
-
-<div id="output"></div>
+<div class="container" id="mainBox">
+  <h1>Will you be my Valentine? ❤️</h1>
+  <p>You can try pressing No... but are you sure? 😏</p>
+  
+  <div class="buttons">
+    <button id="yesBtn">Yes 💖</button>
+    <button id="noBtn">No 😢</button>
+  </div>
+</div>
 
 <script>
 
-function hack() {
+let yesScale = 1;
+let noClicks = 0;
 
-    let text = [
-        "Connecting to server...",
-        "Access granted...",
-        "Reading files...",
-        "Downloading data...",
-        "System hacked successfully!"
-    ];
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
 
-    let i = 0;
+const messages = [
+  "Are you sure? 😢",
+  "Really sure? 🥺",
+  "Think again... 💔",
+  "Don't break my heart 😭",
+  "Last chance... 💖",
+  "You have no choice now 😈"
+];
 
-    let interval = setInterval(function() {
+noBtn.addEventListener("click", () => {
 
-        document.getElementById("output").innerHTML += text[i] + "<br>";
+  noClicks++;
 
-        i++;
+  // Grow Yes button
+  yesScale += 0.4;
+  yesBtn.style.transform = `scale(${yesScale})`;
 
-        if(i >= text.length) {
-            clearInterval(interval);
-        }
+  // Change No text
+  if (noClicks < messages.length) {
+    noBtn.innerText = messages[noClicks];
+  }
 
-    }, 1000);
+  // Make No move randomly
+  const x = Math.random() * 200 - 100;
+  const y = Math.random() * 200 - 100;
+  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+
+  // After many clicks, remove No
+  if (noClicks > 5) {
+    noBtn.style.display = "none";
+
+    // Make Yes fullscreen automatically
+    setTimeout(showFullscreenYes, 500);
+  }
+
+});
+
+yesBtn.addEventListener("click", showFullscreenYes);
+
+function showFullscreenYes() {
+
+  const div = document.createElement("div");
+  div.className = "fullscreenYes";
+  div.innerHTML = "\n    <div>YES!!! 💖</div>\n    <div style='font-size:2vw; margin-top:20px;'>You just made me the happiest person ❤️</div>\n  ";
+
+  document.body.appendChild(div);
+
+  createHearts();
+}
+
+function createHearts() {
+
+  setInterval(() => {
+
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 30 + 10) + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+      heart.remove();
+    }, 4000);
+
+  }, 200);
 
 }
 
